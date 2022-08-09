@@ -1,0 +1,58 @@
+name: Docs CI
+
+on:
+  push:
+    branches:
+      # Add more branches here to publish docs from other branches
+      - main
+    tags:
+      - "*"
+  pull_request:
+
+jobs:
+  docs:
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+        python: ["3.9"]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Avoid git conflicts when tag and branch pushed at same time
+        if: startsWith(github.ref, 'refs/tags')
+        run: sleep 60
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+      
+      - name: Install dependancies
+        run: |
+          python -m pip install --upgrade pip
+          pip install .[docs] -r requirements.txt
+
+      - name: Build docs
+        run: sphinx-build -EWT --keep-going docs build/html
+
+      - name: Move to versioned directory
+        # e.g. main or 0.1.2
+        run: mv build/html ".github/pages/${GITHUB_REF##*/}"
+
+      - name: Write versions.txt
+        run: sphinx_rtd_theme_github_versions .github/pages
+
+      - name: Publish Docs to gh-pages
+        if: github.event_name == 'push'
+        # We pin to the SHA, not the tag, for security reasons.
+        # https://docs.github.com/en/actions/learn-github-actions/security-hardening-for-github-actions#using-third-party-actions
+        uses: peaceiris/actions-gh-pages@068dc23d9710f1ba62e86896f84735d869951305 # v3.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .github/pages
+          keep_files: true
