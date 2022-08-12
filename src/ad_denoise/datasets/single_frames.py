@@ -1,7 +1,7 @@
 from itertools import accumulate
 from math import prod
 from pathlib import Path
-from typing import Optional, cast
+from typing import Iterable, Optional, cast
 
 import hdf5plugin  # noqa: F401
 from h5py import Dataset as H5Dataset
@@ -14,7 +14,9 @@ from torch.utils.data import Dataset
 class SingleFrames(Dataset):
     """A pytorch dataset which loads individual frames from a set of hdf5 datasets."""
 
-    def __init__(self, datasets: set[tuple[Path, str]], frame_dims: int = 2) -> None:
+    def __init__(
+        self, datasets: Iterable[tuple[Path, str]], frame_dims: int = 2
+    ) -> None:
         """Creates a pytorch dataset which reads frames hdf5 datasets.
 
         Args:
