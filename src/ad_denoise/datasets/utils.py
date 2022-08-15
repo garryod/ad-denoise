@@ -1,7 +1,7 @@
 from itertools import accumulate
 from math import prod
 from pathlib import Path
-from typing import Iterable, NewType, Optional
+from typing import Iterable, NewType, Optional, Sequence
 
 import hdf5plugin  # noqa: F401
 from h5py import Dataset, File
@@ -9,12 +9,12 @@ from numpy import ndarray, unravel_index
 
 #: The path to an hdf5 file.
 H5Path = NewType("H5Path", Path)
-#: An iterable of paths to hdf5 files.
-H5Paths = Iterable[H5Path]
+#: A sequence of paths to hdf5 files.
+H5Paths = Sequence[H5Path]
 #: The key within an hdf5 file.
 H5Key = NewType("H5Key", str)
-#: An iterable of keys within an hdf5 file.
-H5Keys = Iterable[H5Key]
+#: A sequence of keys within an hdf5 file.
+H5Keys = Sequence[H5Key]
 
 
 def _get_dataset(file: File, key: H5Key) -> Dataset:
