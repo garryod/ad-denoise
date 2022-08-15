@@ -1,7 +1,7 @@
 from itertools import accumulate
 from math import prod
 from pathlib import Path
-from typing import Iterable, NewType
+from typing import Iterable, NewType, Optional
 
 import hdf5plugin  # noqa: F401
 from h5py import Dataset, File
@@ -110,3 +110,27 @@ def read_frame(dataset: Dataset, idx: int, frame_dims: int) -> ndarray:
         ndarray: An array of dimensionality frame_dims containing the frame data.
     """
     return dataset[unravel_index(idx, dataset.shape[:-frame_dims])]
+
+
+def read_frame_datasets(
+    datasets: list[Dataset],
+    idx: int,
+    frame_dims: int,
+    edges: Optional[list[int]] = None,
+) -> ndarray:
+    """Reads a frame of dimensionality frame_dims from a list of datasets with edges at idx.
+
+    Args:
+        datasets: A list of readable hdf5 dataset objects.
+        edges: A list of the total number of frames in all preceeding datasets.
+        idx: The linearised index of a frame in the datasets.
+        frame_dims: The trailing dimensionality of the frame.
+
+    Returns:
+        ndarray: An array of dimensionality frame_dims containing the frame data.
+    """
+    edges = edges if edges is not None else get_dataset_edges(datasets, frame_dims)
+    dataset_idx = get_dataset_index(idx, edges)
+    dataset = datasets[dataset_idx]
+    start_idx = edges[dataset_idx]
+    return read_frame(dataset, idx - start_idx, frame_dims)
