@@ -5,7 +5,7 @@ from typing import Iterable, NewType, Optional, Sequence
 
 import hdf5plugin  # noqa: F401
 from h5py import Dataset, File
-from numpy import ndarray, unravel_index
+from numpy import atleast_1d, ndarray, unravel_index
 
 #: The path to an hdf5 file.
 H5Path = NewType("H5Path", Path)
@@ -47,7 +47,7 @@ def get_frame_count(dataset: Dataset, frame_dims: int) -> int:
     Returns:
         int: The number of frames in the dataset.
     """
-    return prod(dataset.shape[:-frame_dims])
+    return prod(dataset.shape[: len(dataset.shape) - frame_dims])
 
 
 def get_frame_counts(datasets: Iterable[Dataset], frame_dims: int) -> list[int]:
@@ -103,7 +103,9 @@ def read_frame(dataset: Dataset, idx: int, frame_dims: int) -> ndarray:
     Returns:
         ndarray: An array of dimensionality frame_dims containing the frame data.
     """
-    return dataset[unravel_index(idx, dataset.shape[:-frame_dims])]
+    return atleast_1d(
+        dataset[unravel_index(idx, dataset.shape[: len(dataset.shape) - frame_dims])]
+    )
 
 
 def read_frame_datasets(
