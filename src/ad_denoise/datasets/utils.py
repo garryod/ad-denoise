@@ -118,7 +118,11 @@ def read_frame_datasets(
     frame_dims: int,
     edges: Optional[list[int]] = None,
 ) -> ndarray:
-    """Reads a frame of dimensionality frame_dims from a list of datasets with edges at idx.
+    """Reads a frame of dimensionality frame_dims from a list of datasets at idx.
+
+    Reads a frame of dimensionality frame_dims from a list of datasets at idx. A list
+    of dataset edges, as computed by get_dataset_edges, may be supplied in order to
+    avoid repeat computation of this value.
 
     Args:
         datasets: A list of readable hdf5 dataset objects.
