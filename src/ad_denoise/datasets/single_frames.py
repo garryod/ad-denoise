@@ -1,23 +1,28 @@
 from torch import Tensor, float32, from_numpy
 from torch.utils.data import Dataset
 
-from .utils import H5Datasets, get_dataset_edges, open_datasets, read_frame_datasets
+from .utils import H5Key, H5Paths, get_dataset_edges, open_datasets, read_frame_datasets
 
 
 class SingleFrames(Dataset):
     """A pytorch dataset which loads individual frames from hdf5 datasets."""
 
-    def __init__(self, datasets: H5Datasets, frame_dims: int = 2) -> None:
+    def __init__(
+        self,
+        paths: H5Paths,
+        frames_key: H5Key,
+        frame_dims: int = 2,
+    ) -> None:
         """Creates a pytorch dataset which reads frames hdf5 datasets.
 
         Args:
-            datasets: An iterable of hdf5 file paths and the key of the dataset to be
-                read.
+            paths: An iterable of hdf5 file paths.
+            frames_key: The key of the dataset to be read from each file.
             frame_dims: The trailing dimensionality of the frame. Defaults to 2.
         """
         super().__init__()
         self.frame_dims = frame_dims
-        self.datasets = open_datasets(datasets)
+        (self.datasets,) = open_datasets(paths, (frames_key,))
         self.edges = get_dataset_edges(self.datasets, self.frame_dims)
 
     def __len__(self) -> int:

@@ -9,38 +9,32 @@ from numpy import ndarray, unravel_index
 
 #: The path to an hdf5 file.
 H5Path = NewType("H5Path", Path)
+#: An iterable of paths to hdf5 files.
+H5Paths = Iterable[H5Path]
 #: The key within an hdf5 file.
 H5Key = NewType("H5Key", str)
-#: A reference to a hdf5 dataset by path and key.
-H5Dataset = tuple[H5Path, H5Key]
-#: An iterable of references to hdf5 datasets by path and key.
-H5Datasets = Iterable[H5Dataset]
+#: An iterable of keys within an hdf5 file.
+H5Keys = Iterable[H5Key]
 
 
-def open_dataset(dataset: H5Dataset) -> Dataset:
-    """Opens a hdf5 dataset by path and key.
-
-    Args:
-        dataset: A reference to a hdf5 dataset by path and key.
-
-    Returns:
-        Dataset: A readable hdf5 dataset object.
-    """
-    possibly_dataset = File(dataset[0])[dataset[1]]
+def _get_dataset(file: File, key: H5Key) -> Dataset:
+    possibly_dataset = file[key]
     assert isinstance(possibly_dataset, Dataset)
     return possibly_dataset
 
 
-def open_datasets(datasets: H5Datasets) -> list[Dataset]:
+def open_datasets(paths: H5Paths, keys: H5Keys) -> tuple[list[Dataset], ...]:
     """Opens hdf5 datasets by their paths and keys.
 
     Args:
         datasets: An iterable of references to hdf5 datasets by path and key.
 
     Returns:
-        list[Dataset]: A list of readable hdf5 dataset objects.
+        tuple[list[Dataset], ...]: A tuple across keys containing lists of readable
+            hdf5 dataset objects.
     """
-    return [open_dataset(dataset) for dataset in datasets]
+    files = [File(path) for path in paths]
+    return tuple([_get_dataset(file, key) for file in files] for key in keys)
 
 
 def get_frame_count(dataset: Dataset, frame_dims: int) -> int:

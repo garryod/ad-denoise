@@ -22,7 +22,7 @@ def test_matched_pairs_produces_frames():
             right_file["right_dataset"] = right_data
         for idx, (left_frame, right_frame) in enumerate(
             MatchedFramePairs(
-                {(left_file_path, "left_dataset")}, {(right_file_path, "right_dataset")}
+                {left_file_path}, {right_file_path}, "left_dataset", "right_dataset"
             )
         ):
             assert (from_numpy(left_data[idx]) == left_frame).all()
@@ -37,26 +37,22 @@ def test_matched_pairs_produces_frames_multiple():
     with TemporaryDirectory() as tmpdir:
         left_file_path1 = Path(tmpdir).joinpath("left_testfile1.h5")
         with File(left_file_path1, "w") as left_file1:
-            left_file1["left_dataset1"] = left_data1
+            left_file1["left_dataset"] = left_data1
         left_file_path2 = Path(tmpdir).joinpath("left_testfile2.h5")
         with File(left_file_path2, "w") as left_file2:
-            left_file2["left_dataset2"] = left_data2
+            left_file2["left_dataset"] = left_data2
         right_file_path1 = Path(tmpdir).joinpath("right_testfile1.h5")
         with File(right_file_path1, "w") as right_file1:
-            right_file1["right_dataset1"] = right_data1
+            right_file1["right_dataset"] = right_data1
         right_file_path2 = Path(tmpdir).joinpath("right_testfile2.h5")
         with File(right_file_path2, "w") as right_file2:
-            right_file2["right_dataset2"] = right_data2
+            right_file2["right_dataset"] = right_data2
         for idx, (left_frame, right_frame) in enumerate(
             MatchedFramePairs(
-                [
-                    (left_file_path1, "left_dataset1"),
-                    (left_file_path2, "left_dataset2"),
-                ],
-                [
-                    (right_file_path1, "right_dataset1"),
-                    (right_file_path2, "right_dataset2"),
-                ],
+                [left_file_path1, left_file_path2],
+                [right_file_path1, right_file_path2],
+                "left_dataset",
+                "right_dataset",
             )
         ):
             assert (from_numpy(left_data[idx]) == left_frame).all()
@@ -70,20 +66,19 @@ def test_matched_pairs_reports_length():
     with TemporaryDirectory() as tmpdir:
         left_file_path1 = Path(tmpdir).joinpath("left_testfile1.h5")
         with File(left_file_path1, "w") as left_file1:
-            left_file1["left_dataset1"] = left_data1
+            left_file1["left_dataset"] = left_data1
         left_file_path2 = Path(tmpdir).joinpath("left_testfile2.h5")
         with File(left_file_path2, "w") as left_file2:
-            left_file2["left_dataset2"] = left_data2
+            left_file2["left_dataset"] = left_data2
         right_file_path = Path(tmpdir).joinpath("right_testfile.h5")
         with File(right_file_path, "w") as right_file:
             right_file["right_dataset"] = right_data
         assert 20 == len(
             MatchedFramePairs(
-                [
-                    (left_file_path1, "left_dataset1"),
-                    (left_file_path2, "left_dataset2"),
-                ],
-                {(right_file_path, "right_dataset")},
+                [left_file_path1, left_file_path2],
+                {right_file_path},
+                "left_dataset",
+                "right_dataset",
             )
         )
 
@@ -100,7 +95,7 @@ def test_different_lengths_raises_on_init():
             right_file["right_dataset"] = right_data
         with raises(ValueError):
             MatchedFramePairs(
-                {(left_file_path, "left_dataset")}, {(right_file_path, "right_dataset")}
+                {left_file_path}, {right_file_path}, "left_dataset", "right_dataset"
             )
 
 
@@ -116,7 +111,7 @@ def test_crossed_pairs_produces_frames():
             right_file["right_dataset"] = right_data
         for idx, (left_frame, right_frame) in enumerate(
             CrossedFramePairs(
-                {(left_file_path, "left_dataset")}, {(right_file_path, "right_dataset")}
+                {left_file_path}, {right_file_path}, "left_dataset", "right_dataset"
             )
         ):
             assert (from_numpy(left_data[idx // len(left_data)]) == left_frame).all()
@@ -131,26 +126,22 @@ def test_crossed_pairs_produces_frames_multiple():
     with TemporaryDirectory() as tmpdir:
         left_file_path1 = Path(tmpdir).joinpath("left_testfile1.h5")
         with File(left_file_path1, "w") as left_file1:
-            left_file1["left_dataset1"] = left_data1
+            left_file1["left_dataset"] = left_data1
         left_file_path2 = Path(tmpdir).joinpath("left_testfile2.h5")
         with File(left_file_path2, "w") as left_file2:
-            left_file2["left_dataset2"] = left_data2
+            left_file2["left_dataset"] = left_data2
         right_file_path1 = Path(tmpdir).joinpath("right_testfile1.h5")
         with File(right_file_path1, "w") as right_file1:
-            right_file1["right_dataset1"] = right_data1
+            right_file1["right_dataset"] = right_data1
         right_file_path2 = Path(tmpdir).joinpath("right_testfile2.h5")
         with File(right_file_path2, "w") as right_file2:
-            right_file2["right_dataset2"] = right_data2
+            right_file2["right_dataset"] = right_data2
         for idx, (left_frame, right_frame) in enumerate(
             CrossedFramePairs(
-                [
-                    (left_file_path1, "left_dataset1"),
-                    (left_file_path2, "left_dataset2"),
-                ],
-                [
-                    (right_file_path1, "right_dataset1"),
-                    (right_file_path2, "right_dataset2"),
-                ],
+                [left_file_path1, left_file_path2],
+                [right_file_path1, right_file_path2],
+                "left_dataset",
+                "right_dataset",
             )
         ):
             assert (from_numpy(left_data[idx // len(left_data)]) == left_frame).all()
@@ -164,19 +155,18 @@ def test_crossed_pairs_reports_length():
     with TemporaryDirectory() as tmpdir:
         left_file_path1 = Path(tmpdir).joinpath("left_testfile1.h5")
         with File(left_file_path1, "w") as left_file1:
-            left_file1["left_dataset1"] = left_data1
+            left_file1["left_dataset"] = left_data1
         left_file_path2 = Path(tmpdir).joinpath("left_testfile2.h5")
         with File(left_file_path2, "w") as left_file2:
-            left_file2["left_dataset2"] = left_data2
+            left_file2["left_dataset"] = left_data2
         right_file_path = Path(tmpdir).joinpath("right_testfile.h5")
         with File(right_file_path, "w") as right_file:
             right_file["right_dataset"] = right_data
         assert 400 == len(
             CrossedFramePairs(
-                [
-                    (left_file_path1, "left_dataset1"),
-                    (left_file_path2, "left_dataset2"),
-                ],
-                {(right_file_path, "right_dataset")},
+                [left_file_path1, left_file_path2],
+                {right_file_path},
+                "left_dataset",
+                "right_dataset",
             )
         )

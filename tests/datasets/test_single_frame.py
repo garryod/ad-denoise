@@ -15,7 +15,7 @@ def test_single_frame_produces_frames():
         file_path = Path(tmpdir).joinpath("testfile.h5")
         with File(file_path, "w") as file:
             file["dataset"] = data
-        for idx, frame in enumerate(SingleFrames({(file_path, "dataset")})):
+        for idx, frame in enumerate(SingleFrames({file_path}, "dataset")):
             assert (from_numpy(data[idx]) == frame).all()
 
 
@@ -25,13 +25,11 @@ def test_single_frame_produces_frames_multiple():
     with TemporaryDirectory() as tmpdir:
         file_path1 = Path(tmpdir).joinpath("testfile1.h5")
         with File(file_path1, "w") as file1:
-            file1["first"] = data1
+            file1["dataset"] = data1
         file_path2 = Path(tmpdir).joinpath("testfile2.h5")
         with File(file_path2, "w") as file2:
-            file2["second"] = data2
-        for idx, frame in enumerate(
-            SingleFrames([(file_path1, "first"), (file_path2, "second")])
-        ):
+            file2["dataset"] = data2
+        for idx, frame in enumerate(SingleFrames([file_path1, file_path2], "dataset")):
             assert (from_numpy(data[idx]) == frame).all()
 
 
@@ -41,8 +39,8 @@ def test_single_frame_reports_length():
     with TemporaryDirectory() as tmpdir:
         file_path1 = Path(tmpdir).joinpath("testfile1.h5")
         with File(file_path1, "w") as file1:
-            file1["first"] = data1
+            file1["dataset"] = data1
         file_path2 = Path(tmpdir).joinpath("testfile2.h5")
         with File(file_path2, "w") as file2:
-            file2["second"] = data2
-        assert 20 == len(SingleFrames([(file_path1, "first"), (file_path2, "second")]))
+            file2["dataset"] = data2
+        assert 20 == len(SingleFrames([file_path1, file_path2], "dataset"))

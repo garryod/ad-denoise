@@ -1,7 +1,7 @@
 from torch import Tensor, float32, from_numpy
 from torch.utils.data import Dataset
 
-from .utils import H5Datasets, get_dataset_edges, open_datasets, read_frame_datasets
+from .utils import H5Key, H5Paths, get_dataset_edges, open_datasets, read_frame_datasets
 
 
 class MatchedFramePairs(Dataset):
@@ -15,25 +15,27 @@ class MatchedFramePairs(Dataset):
 
     def __init__(
         self,
-        left_datasets: H5Datasets,
-        right_datasets: H5Datasets,
+        left_paths: H5Paths,
+        right_paths: H5Paths,
+        left_frames_key: H5Key,
+        right_frames_key: H5Key,
         left_frame_dims: int = 2,
         right_frame_dims: int = 2,
     ) -> None:
         """Creates a pytorch dataset which reads matched pairs from hdf5 datasets.
 
         Args:
-            left_datasets: An iterable of hdf5 file paths and the key of the dataset to
-                be read.
-            right_datasets: An iterable of hdf5 file paths and the key of the dataset to
-                be read.
+            left_paths: An iterable of hdf5 file paths from which data can be read.
+            right_paths: An iterable of hdf5 file paths from which data can be read.
+            left_frames_key: The key of the dataset to be read.
+            right_frames_key: The key of the dataset to be read.
             left_frame_dims: The trailing dimensionality of the frame. Defaults to 2.
             right_frame_dims: The trailing dimensionality of the frame. Defaults to 2.
         """
         self.left_frame_dims = left_frame_dims
         self.right_frame_dims = right_frame_dims
-        self.left_datasets = open_datasets(left_datasets)
-        self.right_datasets = open_datasets(right_datasets)
+        (self.left_datasets,) = open_datasets(left_paths, (left_frames_key,))
+        (self.right_datasets,) = open_datasets(right_paths, (right_frames_key,))
         self.left_edges = get_dataset_edges(self.left_datasets, self.left_frame_dims)
         self.right_edges = get_dataset_edges(self.right_datasets, self.right_frame_dims)
         if self.left_edges[-1] != self.right_edges[-1]:
@@ -77,26 +79,28 @@ class CrossedFramePairs(Dataset):
 
     def __init__(
         self,
-        left_datasets: H5Datasets,
-        right_datasets: H5Datasets,
+        left_paths: H5Paths,
+        right_paths: H5Paths,
+        left_frames_key: H5Key,
+        right_frames_key: H5Key,
         left_frame_dims: int = 2,
         right_frame_dims: int = 2,
     ) -> None:
         """Creates a pytorch dataset which reads crossed pairs from hdf5 datasets.
 
         Args:
-            left_datasets: An iterable of hdf5 file paths and the key of the dataset to
-                be read.
-            right_datasets: An iterable of hdf5 file paths and the key of the dataset to
-                be read.
+            left_paths: An iterable of hdf5 file paths from which data can be read.
+            right_paths: An iterable of hdf5 file paths from which data can be read.
+            left_frames_key: The key of the dataset to be read.
+            right_frames_key: The key of the dataset to be read.
             left_frame_dims: The trailing dimensionality of the frame. Defaults to 2.
             right_frame_dims: The trailing dimensionality of the frame. Defaults to 2.
         """
         super().__init__()
         self.left_frame_dims = left_frame_dims
         self.right_frame_dims = right_frame_dims
-        self.left_datasets = open_datasets(left_datasets)
-        self.right_datasets = open_datasets(right_datasets)
+        (self.left_datasets,) = open_datasets(left_paths, (left_frames_key,))
+        (self.right_datasets,) = open_datasets(right_paths, (right_frames_key,))
         self.left_edges = get_dataset_edges(self.left_datasets, self.left_frame_dims)
         self.right_edges = get_dataset_edges(self.right_datasets, self.right_frame_dims)
 
