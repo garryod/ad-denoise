@@ -1,4 +1,4 @@
-from .different_pairs import CrossedFramePairs, MatchedFramePairs
-from .single_frames import SingleFrames
+from .collated import CrossedDatasets, ZippedDatasets
+from .hdf5 import SimpleHdf5
 
-__all__ = ["CrossedFramePairs", "MatchedFramePairs", "SingleFrames"]
+__all__ = ["CrossedDatasets", "ZippedDatasets", "SimpleHdf5"]
