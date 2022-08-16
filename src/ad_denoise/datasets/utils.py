@@ -1,11 +1,12 @@
 from itertools import accumulate
 from math import prod
 from pathlib import Path
-from typing import Iterable, NewType, Optional, Sequence
+from typing import Iterable, NewType, Optional, Protocol, Sequence, Sized
 
 import hdf5plugin  # noqa: F401
 from h5py import Dataset, File
 from numpy import atleast_1d, ndarray, unravel_index
+from torch import Tensor
 
 #: The path to an hdf5 file.
 H5Path = NewType("H5Path", Path)
@@ -15,6 +16,23 @@ H5Paths = Sequence[H5Path]
 H5Key = NewType("H5Key", str)
 #: A sequence of keys within an hdf5 file.
 H5Keys = Sequence[H5Key]
+#: The dimensionality of a frame.
+Dim = NewType("Dim", int)
+#: A sequence of frame dimensions.
+Dims = Sequence[Dim]
+#: A tuple of tensors.
+Tensors = tuple[Tensor, ...]
+
+
+class TensorsDataset(Protocol):
+    """A protocol representing datasets which fetch a tuple of tensors."""
+
+    def __getitem__(self, idx: int) -> Tensors:
+        ...
+
+
+class SizedTensorsDataset(Sized, TensorsDataset, Protocol):
+    """A protocol representing sized datasets which fetch a tuple of tensors."""
 
 
 def _get_dataset(file: File, key: H5Key) -> Dataset:

@@ -1,18 +1,11 @@
 import operator
 from itertools import accumulate, chain
 from math import prod
-from typing import Protocol, Sized
 
 from more_itertools import take
-from torch import Tensor
 from torch.utils.data import Dataset
 
-
-class SizedTensorsDataset(Sized, Protocol):
-    """A protocol representing sized datasets which fetch a tuple of tensors."""
-
-    def __getitem__(self, idx: int) -> tuple[Tensor, ...]:
-        ...
+from .utils import SizedTensorsDataset, Tensors
 
 
 class ZippedDatasets(Dataset):
@@ -43,7 +36,7 @@ class ZippedDatasets(Dataset):
     def __len__(self) -> int:
         return min(len(dataset) for dataset in self.datasets)
 
-    def __getitem__(self, idx: int) -> tuple[tuple[Tensor, ...], ...]:
+    def __getitem__(self, idx: int) -> tuple[Tensors, ...]:
         if idx >= len(self):
             raise IndexError
         return tuple(dataset[idx] for dataset in self.datasets)
@@ -81,7 +74,7 @@ class CrossedDatasets(Dataset):
     def __len__(self) -> int:
         return prod(len(dataset) for dataset in self.datasets)
 
-    def __getitem__(self, idx: int) -> tuple[tuple[Tensor, ...], ...]:
+    def __getitem__(self, idx: int) -> tuple[Tensors, ...]:
         if idx >= len(self):
             raise IndexError
         return tuple(

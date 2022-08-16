@@ -1,11 +1,11 @@
-from typing import Sequence
-
-from torch import Tensor, float32, from_numpy
+from torch import float32, from_numpy
 from torch.utils.data import Dataset
 
 from .utils import (
+    Dims,
     H5Keys,
     H5Paths,
+    Tensors,
     get_dataset_edges,
     open_datasets,
     read_frame_datasets,
@@ -19,7 +19,7 @@ class SimpleHdf5(Dataset):
         self,
         paths: H5Paths,
         keys: H5Keys,
-        dims: Sequence[int],
+        dims: Dims,
     ) -> None:
         """Creates a dataset which reads frames at keys from multiple hdf5 paths.
 
@@ -47,7 +47,7 @@ class SimpleHdf5(Dataset):
     def __len__(self) -> int:
         return self.edges[-1]
 
-    def __getitem__(self, idx: int) -> tuple[Tensor, ...]:
+    def __getitem__(self, idx: int) -> Tensors:
         return tuple(
             from_numpy(read_frame_datasets(datasets, idx, dims, self.edges))
             .unsqueeze(0)
