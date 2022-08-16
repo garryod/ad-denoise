@@ -19,23 +19,29 @@ class ZippedDatasets(Dataset):
     """A pytorch dataset which loads index aligned frames from hdf5 datasets.
 
     A pytorch dataset which loads index aligned frames from two iterables of hdf5
-    datasets. This dataset creates a one to one mapping between frames in the left and
-    right datasets, as such it requires the total number of frames present in each
-    iterable of hdf5 datasets to be equal.
+    datasets. This dataset creates a one to one mapping between frames in each of the
+    contained datasets. By default, the lengths of each dataset will be checked and an
+    error raised if they are not equal.
     """
 
-    def __init__(self, *datasets: SizedTensorsDataset) -> None:
+    def __init__(
+        self, *datasets: SizedTensorsDataset, check_lengths: bool = True
+    ) -> None:
         """Creates a pytorch dataset which reads index matched data from hdf5 datasets.
 
         Args:
             datasets: A sequence of datasets of equal length.
+            check_lengths: If True, a value error will be raised if datasets are not of
+                equal length. Defaults to True.
         """
         self.datasets = datasets
-        if any(len(datasets[0]) != len(dataset) for dataset in datasets):
+        if check_lengths and any(
+            len(datasets[0]) != len(dataset) for dataset in datasets
+        ):
             raise ValueError("All datasets must contain the same number of frames.")
 
     def __len__(self) -> int:
-        return len(self.datasets[0])
+        return min(len(dataset) for dataset in self.datasets)
 
     def __getitem__(self, idx: int) -> tuple[tuple[Tensor, ...], ...]:
         if idx >= len(self):
