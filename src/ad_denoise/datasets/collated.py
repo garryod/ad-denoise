@@ -1,14 +1,14 @@
 import operator
 from itertools import accumulate, chain
 from math import prod
+from typing import Any
 
 from more_itertools import take
-from torch.utils.data import Dataset
 
-from .utils import SizedTensorsDataset, Tensors
+from .utils import SizedDataset
 
 
-class ZippedDatasets(Dataset):
+class ZippedDatasets(SizedDataset[tuple[Any, ...]]):
     """A pytorch dataset which loads index aligned frames from hdf5 datasets.
 
     A pytorch dataset which loads index aligned frames from two iterables of hdf5
@@ -18,7 +18,7 @@ class ZippedDatasets(Dataset):
     """
 
     def __init__(
-        self, *datasets: SizedTensorsDataset, check_lengths: bool = True
+        self, *datasets: SizedDataset[Any], check_lengths: bool = True
     ) -> None:
         """Creates a pytorch dataset which reads index matched data from hdf5 datasets.
 
@@ -36,13 +36,13 @@ class ZippedDatasets(Dataset):
     def __len__(self) -> int:
         return min(len(dataset) for dataset in self.datasets)
 
-    def __getitem__(self, idx: int) -> tuple[Tensors, ...]:
+    def __getitem__(self, idx: int) -> tuple[Any, ...]:
         if idx >= len(self):
             raise IndexError
         return tuple(dataset[idx] for dataset in self.datasets)
 
 
-class CrossedDatasets(Dataset):
+class CrossedDatasets(SizedDataset[tuple[Any, ...]]):
     """A pytorch dataset which loads crossed frames from hdf5 datasets.
 
     A pytorch dataset which loads crossed frames from multiple sized datasets. The
@@ -51,7 +51,7 @@ class CrossedDatasets(Dataset):
     dataset.
     """
 
-    def __init__(self, *datasets: SizedTensorsDataset) -> None:
+    def __init__(self, *datasets: SizedDataset[Any]) -> None:
         """Creates a pytorch dataset which reads index crossed from hdf5 datasets.
 
         Args:
@@ -74,7 +74,7 @@ class CrossedDatasets(Dataset):
     def __len__(self) -> int:
         return prod(len(dataset) for dataset in self.datasets)
 
-    def __getitem__(self, idx: int) -> tuple[Tensors, ...]:
+    def __getitem__(self, idx: int) -> tuple[Any, ...]:
         if idx >= len(self):
             raise IndexError
         return tuple(

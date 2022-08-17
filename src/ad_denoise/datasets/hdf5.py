@@ -1,18 +1,17 @@
-from torch import float32, from_numpy
-from torch.utils.data import Dataset
+from torch import Tensor, float32, from_numpy
 
 from .utils import (
     Dims,
     H5Keys,
     H5Paths,
-    Tensors,
+    SizedDataset,
     get_dataset_edges,
     open_datasets,
     read_frame_datasets,
 )
 
 
-class SimpleHdf5(Dataset):
+class SimpleHdf5(SizedDataset[tuple[Tensor, ...]]):
     """A pytorch dataset which loads frames at keys from multiple hdf5 paths."""
 
     def __init__(
@@ -47,7 +46,7 @@ class SimpleHdf5(Dataset):
     def __len__(self) -> int:
         return self.edges[-1]
 
-    def __getitem__(self, idx: int) -> Tensors:
+    def __getitem__(self, idx: int) -> tuple[Tensor, ...]:
         return tuple(
             from_numpy(read_frame_datasets(datasets, idx, dims, self.edges))
             .unsqueeze(0)
