@@ -1,11 +1,9 @@
-from typing import NewType, Sequence, Sized, TypeVar
+from typing import NewType, Sized, TypeVar
 
 from torch.utils.data import Dataset as TorchDataset
 
 #: The dimensionality of a frame.
 Dim = NewType("Dim", int)
-#: A sequence of frame dimensions.
-Dims = Sequence[Dim]
 
 T_co = TypeVar("T_co", covariant=True)
 
