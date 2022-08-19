@@ -1,7 +1,7 @@
 import operator
 from itertools import accumulate, chain
 from math import prod
-from typing import Any
+from typing import Any, TypeVar, cast
 
 from more_itertools import take
 
@@ -40,6 +40,36 @@ class ZippedDatasets(SizedDataset[tuple[Any, ...]]):
         if idx >= len(self):
             raise IndexError
         return tuple(dataset[idx] for dataset in self.datasets)
+
+
+T1 = TypeVar("T1")
+T2 = TypeVar("T2")
+
+
+class InputTargetDataset(SizedDataset[tuple[T1, T2]]):
+    """A pytorch dataset containing a zipped input and target dataset."""
+
+    def __init__(
+        self,
+        input: SizedDataset[T1],
+        target: SizedDataset[T2],
+        check_lengths: bool = True,
+    ) -> None:
+        """Creates a pytorch dataset with a zipped input and target dataset.
+
+        Args:
+            input: The input dataset.
+            target: The target dataset.
+            check_lengths: If True, a value error will be raised if datasets are not of
+                equal length. Defaults to True.
+        """
+        self.dataset = ZippedDatasets(input, target, check_lengths=check_lengths)
+
+    def __len__(self) -> int:
+        return len(self.dataset)
+
+    def __getitem__(self, idx: int) -> tuple[T1, T2]:
+        return cast(tuple[T1, T2], self.dataset[idx])
 
 
 class CrossedDatasets(SizedDataset[tuple[Any, ...]]):
