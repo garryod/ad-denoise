@@ -1,6 +1,6 @@
 import click
 
-from . import __version__
+from ._version_git import __version__
 
 
 @click.group(invoke_without_command=True)
