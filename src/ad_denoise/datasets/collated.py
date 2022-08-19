@@ -1,10 +1,12 @@
 import operator
+from dataclasses import dataclass
 from itertools import accumulate, chain
 from math import prod
 from typing import Any, TypeVar, cast
 
 from more_itertools import take
 
+from .config import SizedDatasetConfig
 from .utils import SizedDataset
 
 
@@ -42,6 +44,20 @@ class ZippedDatasets(SizedDataset[tuple[Any, ...]]):
         return tuple(dataset[idx] for dataset in self.datasets)
 
 
+@dataclass
+class ZippedDatasetsConfig(SizedDatasetConfig[tuple[Any, ...]]):
+    """A configuration schema for zipped datasets."""
+
+    __alias__ = "ZippedDatasets"
+    datasets: list[SizedDatasetConfig]
+    check_lengths: bool
+
+    def __call__(self) -> SizedDataset[tuple[Any, ...]]:  # noqa: D102
+        return ZippedDatasets(
+            *(dataset() for dataset in self.datasets), check_lengths=self.check_lengths
+        )
+
+
 T1 = TypeVar("T1")
 T2 = TypeVar("T2")
 
@@ -70,6 +86,18 @@ class InputTargetDataset(SizedDataset[tuple[T1, T2]]):
 
     def __getitem__(self, idx: int) -> tuple[T1, T2]:
         return cast(tuple[T1, T2], self.dataset[idx])
+
+
+@dataclass
+class InputTargetDatasetConfig(SizedDatasetConfig[tuple[T1, T2]]):
+    """A configuration schema for input target datasets."""
+
+    __alias__ = "InputTargetDataset"
+    input: SizedDatasetConfig[T1]
+    target: SizedDatasetConfig[T2]
+
+    def __call__(self) -> SizedDataset[tuple[T1, T2]]:  # noqa: D102
+        return InputTargetDataset(self.input(), self.target())
 
 
 class CrossedDatasets(SizedDataset[tuple[Any, ...]]):
@@ -111,3 +139,14 @@ class CrossedDatasets(SizedDataset[tuple[Any, ...]]):
             dataset[(idx // edge) % len(dataset)]
             for dataset, edge in zip(self.datasets, self.edges)
         )
+
+
+@dataclass
+class CrossedDatasetsConfig(SizedDatasetConfig[tuple[Any, ...]]):
+    """A configuration schema for crossed datasets."""
+
+    __alias__ = "CrossedDatasets"
+    datasets: list[SizedDatasetConfig]
+
+    def __call__(self) -> SizedDataset[tuple[Any, ...]]:  # noqa: D102
+        return CrossedDatasets(*(dataset() for dataset in self.datasets))
