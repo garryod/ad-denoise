@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from itertools import accumulate
 from math import prod
 from pathlib import Path
@@ -8,6 +9,7 @@ from h5py import Dataset, File
 from numpy import atleast_1d, ndarray, unravel_index
 from torch import Tensor, float32, from_numpy
 
+from .config import SizedDatasetConfig
 from .utils import Dim, SizedDataset
 
 #: The path to an hdf5 file.
@@ -193,3 +195,16 @@ class SimpleHdf5(SizedDataset[Tensor]):
             .unsqueeze(0)
             .type(float32)
         )
+
+
+@dataclass
+class SimpleHdf5DatasetConfig(SizedDatasetConfig):
+    """A configuration schema for a simple hdf5 dataset."""
+
+    __alias__ = "SimpleHdf5Dataset"
+    paths: list[H5Path]
+    key: H5Key
+    dimensions: Dim
+
+    def __call__(self) -> SizedDataset[Tensor]:  # noqa: D102
+        return SimpleHdf5(self.paths, self.key, self.dimensions)
