@@ -1,6 +1,9 @@
+from dataclasses import dataclass
 from typing import cast
 
 from torch import Tensor
+
+from ad_denoise.datasets.config import SizedDatasetConfig
 
 from .collated import ZippedDatasets
 from .computed import ComputedFramesDataset
@@ -9,9 +12,7 @@ from .repeating import RepeatingDataset
 from .utils import Dim, SizedDataset
 
 
-class Hdf5AreaDetectorImages(
-    ComputedFramesDataset[tuple[Tensor, Tensor, Tensor], Tensor]
-):
+class Hdf5ADImagesDataset(SizedDataset[Tensor]):
     """A high level pytorch dataset for loading area detecor images from hdf5."""
 
     def __init__(
@@ -38,7 +39,7 @@ class Hdf5AreaDetectorImages(
         mask_dataset = RepeatingDataset(
             SimpleHdf5((mask_path,), mask_key, Dim(2)), len(frames_dataset)
         )
-        super(Hdf5AreaDetectorImages, self).__init__(
+        self.dataset = ComputedFramesDataset(
             cast(
                 SizedDataset[tuple[Tensor, Tensor, Tensor]],
                 ZippedDatasets(
@@ -47,9 +48,36 @@ class Hdf5AreaDetectorImages(
                     mask_dataset,
                 ),
             ),
-            Hdf5AreaDetectorImages._mask_and_normalize,
+            Hdf5ADImagesDataset._mask_and_normalize,
         )
 
     @staticmethod
     def _mask_and_normalize(frame: tuple[Tensor, Tensor, Tensor]) -> Tensor:
         return frame[0] * frame[1] / frame[2]
+
+    def __len__(self) -> int:
+        return len(self.dataset)
+
+    def __getitem__(self, index: int) -> Tensor:
+        return self.dataset[index]
+
+
+@dataclass
+class Hdf5ADImagesDatasetConfig(SizedDatasetConfig[Tensor]):
+    """A configuration schema for hdf5 area detector image datasets."""
+
+    __alias__ = "Hdf5ADImagesDataset"
+    data_paths: list[H5Path]
+    frame_key: H5Key
+    count_times_key: H5Key
+    mask_path: H5Path
+    mask_key: H5Key
+
+    def __call__(self) -> SizedDataset[Tensor]:  # noqa: D102
+        return Hdf5ADImagesDataset(
+            self.data_paths,
+            self.frame_key,
+            self.count_times_key,
+            self.mask_path,
+            self.mask_key,
+        )
