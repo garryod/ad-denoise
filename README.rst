@@ -12,6 +12,50 @@ Documentation  https://garryod.github.io/ad_denoise
 Releases       https://github.com/garryod/ad_denoise/releases
 ============== ==============================================
 
+Model training can be performed using the below command:
+
+.. code:: bash
+
+    python -m ad_denoise train my_config.yaml
+
+Where ``my_config.yaml`` is as so:
+
+.. code:: yaml
+
+    max_epochs: 50
+    model:
+    Noise2Self:
+        network:
+        Gaussian:
+            kernel_half_width: 3
+        train_dataset:
+        Hdf5ADImagesDataset:
+            data_paths:
+            - /dls/i22/data/2022/cm31149-3/Denoising/i22-629817.nxs
+            frame_key: entry1/detector/data
+            count_times_key: entry1/instrument/detector/count_time
+            mask_path: /dls/i22/data/2022/cm31149-3/processing/SAXS_mask.nxs
+            mask_key: entry/mask/mask
+        val_dataset:
+        InputTargetDataset:
+            input:
+            Hdf5ADImagesDataset:
+                data_paths:
+                - /dls/i22/data/2022/cm31149-3/Denoising/i22-629817.nxs
+                frame_key: entry1/detector/data
+                count_times_key: entry1/instrument/detector/count_time
+                mask_path: /dls/i22/data/2022/cm31149-3/processing/SAXS_mask.nxs
+                mask_key: entry/mask/mask
+            target:
+            Hdf5ADImagesDataset:
+                data_paths:
+                - /dls/i22/data/2022/cm31149-3/Denoising/i22-629822.nxs
+                - /dls/i22/data/2022/cm31149-3/Denoising/i22-629823.nxs
+                frame_key: entry1/detector/data
+                count_times_key: entry1/instrument/detector/count_time
+                mask_path: /dls/i22/data/2022/cm31149-3/processing/SAXS_mask.nxs
+                mask_key: entry/mask/mask
+
 .. |code_ci| image:: https://github.com/garryod/ad_denoise/workflows/Code%20CI/badge.svg?branch=main
     :target: https://github.com/garryod/ad_denoise/actions?query=workflow%3A%22Code+CI%22
     :alt: Code CI
