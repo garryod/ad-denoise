@@ -39,7 +39,7 @@ multidict==6.0.2
 mypy==0.971
 mypy-extensions==0.4.3
 nodeenv==1.7.0
-numpy==1.23.2
+numpy==1.23.3
 oauthlib==3.2.1
 packaging==21.3
 pathspec==0.10.0
