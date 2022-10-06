@@ -7,22 +7,19 @@
 			"VARIANT": "3.10-bullseye"
 		}
 	},
-	"remoteEnv": {
-		"DISPLAY": "${localEnv:DISPLAY}"
-	},
 	"settings": {
-		"python.defaultInterpreterPath": "/usr/local/bin/python",
+		"python.defaultInterpreterPath": "/usr/local/python/bin/python",
 		"python.linting.enabled": true,
 		"python.linting.pylintEnabled": true,
-		"python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
-		"python.formatting.blackPath": "/usr/local/py-utils/bin/black",
-		"python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
-		"python.linting.banditPath": "/usr/local/py-utils/bin/bandit",
-		"python.linting.flake8Path": "/usr/local/py-utils/bin/flake8",
-		"python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
-		"python.linting.pycodestylePath": "/usr/local/py-utils/bin/pycodestyle",
-		"python.linting.pydocstylePath": "/usr/local/py-utils/bin/pydocstyle",
-		"python.linting.pylintPath": "/usr/local/py-utils/bin/pylint"
+		"python.formatting.autopep8Path": "/usr/local/python/py-utils/bin/autopep8",
+		"python.formatting.blackPath": "/usr/local/python/py-utils/bin/black",
+		"python.formatting.yapfPath": "/usr/local/python/py-utils/bin/yapf",
+		"python.linting.banditPath": "/usr/local/python/py-utils/bin/bandit",
+		"python.linting.flake8Path": "/usr/local/python/py-utils/bin/flake8",
+		"python.linting.mypyPath": "/usr/local/python/py-utils/bin/mypy",
+		"python.linting.pycodestylePath": "/usr/local/python/py-utils/bin/pycodestyle",
+		"python.linting.pydocstylePath": "/usr/local/python/py-utils/bin/pydocstyle",
+		"python.linting.pylintPath": "/usr/local/python/py-utils/bin/pylint"
 	},
 	"extensions": [
 		"ms-python.python",
@@ -33,10 +30,16 @@
 	"features": {
 		"git": "os-provided"
 	},
+	"runArgs": [
+		"--privileged",
+		"--net=host",
+		"--pid=host",
+		"--shm-size=0"
+	],
 	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,Z",
 	"workspaceFolder": "/workspace",
 	"postCreateCommand": "pip install -e .[dev]",
-	"runArgs": [
-		"--shm-size=0"
+	"mounts": [
+		"source=/dls/i22/data/,target=/dls/i22/data/,type=bind"
 	]
 }
