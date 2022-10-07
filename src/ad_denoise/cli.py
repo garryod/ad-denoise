@@ -3,6 +3,7 @@ from pathlib import Path
 
 import click
 from pytorch_lightning import Trainer
+from torch.cuda import device_count
 
 from ad_denoise.lightning_modules import LightningModuleConfig
 from ad_denoise.utils import load_config
@@ -30,10 +31,9 @@ class TrainConfig:
     model: LightningModuleConfig
     max_epochs: int
 
-
 @main.command(help="Train a model on the given datasets")
 @click.argument("config_file", type=click.Path(exists=True, dir_okay=False))
 def train(config_file: Path) -> None:  # noqa: D103
     config = load_config(config_file, TrainConfig)
-    trainer = Trainer(max_epochs=config.max_epochs, log_every_n_steps=1)
+    trainer = Trainer(max_epochs=config.max_epochs, log_every_n_steps=1, accelerator="auto")
     trainer.fit(config.model())
