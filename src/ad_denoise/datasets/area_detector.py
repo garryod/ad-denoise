@@ -44,8 +44,8 @@ class Hdf5ADImagesDataset(SizedDataset[Tensor]):
                 SizedDataset[tuple[Tensor, Tensor, Tensor]],
                 ZippedDatasets(
                     frames_dataset,
-                    frame_times_dataset,
                     mask_dataset,
+                    frame_times_dataset,
                 ),
             ),
             Hdf5ADImagesDataset._mask_and_normalize,
