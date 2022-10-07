@@ -64,5 +64,5 @@ target/
 /lightweight-venv/
 /installed.files
 
-# Pytorch lightning logs
-/lightning_logs/
+# Logs
+/logs/
