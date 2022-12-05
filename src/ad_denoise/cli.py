@@ -9,7 +9,7 @@ from pytorch_lightning.loggers import TensorBoardLogger
 from ad_denoise.lightning_modules import LightningModuleConfig
 from ad_denoise.utils import load_config
 
-from ._version_git import __version__
+from . import __version__
 
 
 @click.group(invoke_without_command=True)
