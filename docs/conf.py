@@ -15,7 +15,7 @@ import ad_denoise
 # -- General configuration ------------------------------------------------
 
 # General information about the project.
-project = "ad-denoise"
+project = "ad_denoise"
 
 # The full version, including alpha/beta/rc tags.
 release = ad_denoise.__version__
