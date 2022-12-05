@@ -1,4 +1,4 @@
-from . import cli, datasets, lightning_modules, modules, utils
-from ._version_git import __version__
+from importlib.metadata import version
 
-__all__ = ["__version__", "cli", "datasets", "lightning_modules", "modules", "utils"]
+__version__ = version("ad_denoise")
+del version
