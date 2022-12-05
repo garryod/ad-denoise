@@ -27,11 +27,5 @@ repos:
         stages: [commit]
         language: system
         entry: pydocstyle
-        files: ^(src\/).*\.py
-
-      - id: mypy
-        name: Run mypy
-        stages: [commit]
-        language: system
-        entry: mypy
-        files: ^(src\/|tests\/).*\.py
+        types: [python]
+        exclude: '^\.|test_'
