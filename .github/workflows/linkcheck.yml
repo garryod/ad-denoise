@@ -1,33 +1,29 @@
 name: Link Check
 
 on:
+  workflow_dispatch:
   schedule:
-    # Run every Monday at 8am to check URL links still resolve
-    - cron: "0 8 * * MON"
+    # Run weekly to check URL links still resolve
+    - cron: "0 8 * * WED"
 
 jobs:
   docs:
     strategy:
+      fail-fast: false
       matrix:
-        os: ["ubuntu-latest"]
-        python: ["3.9"]
+        python: ["3.10"]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install python packages
+        uses: ./.github/actions/install_requirements
         with:
-          fetch-depth: 0
+          requirements_file: requirements-dev-3.x.txt
+          install_options: -e .[dev]
 
-      - name: Setup python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Install dependancies
-        run: |
-          python -m pip install --upgrade pip
-          pip install .[docs] -r requirements.txt
-
-      - name: Build docs
-        run: sphinx-build -EWT --keep-going docs build/html -b linkcheck
+      - name: Check links
+        run: tox -e docs build -- -b linkcheck
