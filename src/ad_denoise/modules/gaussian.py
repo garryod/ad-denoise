@@ -1,7 +1,7 @@
 from math import pi, sqrt
 from typing import Optional
 
-from torch import Tensor, exp, linspace, meshgrid, norm, rand, stack, tensor
+from torch import Tensor, as_tensor, exp, linspace, meshgrid, norm, rand, stack
 from torch.nn import Module
 from torch.nn.functional import conv2d
 from torch.nn.parameter import Parameter
@@ -30,11 +30,11 @@ class GaussianKernel2D(Module):
             requires_grad=False,
         )
         self.stdev = Parameter(
-            tensor(stdev) if stdev is not None else rand((1,), requires_grad=True)
+            as_tensor(stdev) if stdev is not None else rand((1,)), requires_grad=True
         )
 
-    def forward(self, x: Tensor) -> Tensor:  # noqa: D102
-        kernel = (
+    def _build_kernel(self) -> Tensor:
+        return (
             (
                 1
                 / (self.stdev * sqrt(2 * pi))
@@ -43,4 +43,15 @@ class GaussianKernel2D(Module):
             .unsqueeze(0)
             .unsqueeze(0)
         )
-        return conv2d(x, kernel)
+
+    def forward(self, x: Tensor) -> Tensor:  # noqa: D102
+        return conv2d(x, self._build_kernel().type_as(x))
+
+
+class BlindGaussianKernel2D(GaussianKernel2D):
+    """A pytorch module which convolves a gaussian kernel with learned stdev in 2d."""
+
+    def _build_kernel(self) -> Tensor:
+        kernel = super()._build_kernel()
+        kernel[:, :, kernel.shape[2] // 2, kernel.shape[3] // 2] = 0
+        return kernel
