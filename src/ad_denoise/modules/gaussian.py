@@ -25,7 +25,10 @@ class GaussianKernel2D(Module):
             raise ValueError("Kernel half width must be positive.")
 
         linvec = linspace(-half_width, half_width, 2 * half_width + 1)
-        self.radii = norm(stack(meshgrid(linvec, linvec, indexing="ij")), dim=0)
+        self.radii = Parameter(
+            norm(stack(meshgrid(linvec, linvec, indexing="ij")), dim=0),
+            requires_grad=False,
+        )
         self.stdev = Parameter(
             tensor(stdev) if stdev is not None else rand((1,), requires_grad=True)
         )

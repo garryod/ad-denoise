@@ -27,8 +27,8 @@ def test_gaussian_kernel_2d_multiplies_by_gaussian(
     assert isclose(expected, model.forward(input).item(), rel_tol=1e-5)
 
 
-def test_gaussian_kernel_has_weight():
-    assert 1 == ilen(GaussianKernel2D(42).parameters())
+def test_gaussian_kernel_has_weights():
+    assert 2 == ilen(GaussianKernel2D(42).parameters())
 
 
 def test_gaussian_kernel_generates_random_stdev():
