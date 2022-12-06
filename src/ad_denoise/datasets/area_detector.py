@@ -53,7 +53,7 @@ class Hdf5ADImagesDataset(SizedDataset[Tensor]):
 
     @staticmethod
     def _mask_and_normalize(frame: tuple[Tensor, Tensor, Tensor]) -> Tensor:
-        return frame[0] * frame[1] / frame[2]
+        return frame[0] * (1.0 - frame[1]) / frame[2]
 
     def __len__(self) -> int:
         return len(self.dataset)
