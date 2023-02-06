@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>ad_denoise &#8212; ad_denoise 0.1.dev126+g9122497 documentation</title>
+    <title>ad_denoise &#8212; ad_denoise 0.1.dev127+g859b741 documentation</title>
   
   
   
@@ -374,43 +374,43 @@ syncrotron x-ray area detector images.</p>
 </tbody>
 </table>
 <p>Model training can be performed using the below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m ad_denoise train my_config.yaml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>ad_denoise<span class="w"> </span>train<span class="w"> </span>my_config.yaml
 </pre></div>
 </div>
 <p>Where <code class="docutils literal notranslate"><span class="pre">my_config.yaml</span></code> is as so:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w"></span>
-<span class="nt">model</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">Noise2Self</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">network</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="nt">Gaussian</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="nt">kernel_half_width</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">                </span><span class="nt">train_dataset</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">Hdf5ADImagesDataset</span><span class="p">:</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">data_paths</span><span class="p">:</span><span class="w"></span>
-<span class="w">                        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/Denoising/i22-629817.nxs</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">frame_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/detector/data</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">count_times_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/instrument/detector/count_time</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">mask_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/processing/SAXS_mask.nxs</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">mask_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry/mask/mask</span><span class="w"></span>
-<span class="w">                </span><span class="nt">val_dataset</span><span class="p">:</span><span class="w"></span>
-<span class="w">                    </span><span class="nt">InputTargetDataset</span><span class="p">:</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">input</span><span class="p">:</span><span class="w"></span>
-<span class="w">                            </span><span class="nt">Hdf5ADImagesDataset</span><span class="p">:</span><span class="w"></span>
-<span class="w">                                </span><span class="nt">data_paths</span><span class="p">:</span><span class="w"></span>
-<span class="w">                                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/Denoising/i22-629817.nxs</span><span class="w"></span>
-<span class="w">                                </span><span class="nt">frame_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/detector/data</span><span class="w"></span>
-<span class="w">                                </span><span class="nt">count_times_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/instrument/detector/count_time</span><span class="w"></span>
-<span class="w">                                </span><span class="nt">mask_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/processing/SAXS_mask.nxs</span><span class="w"></span>
-<span class="w">                                </span><span class="nt">mask_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry/mask/mask</span><span class="w"></span>
-<span class="w">                        </span><span class="nt">target</span><span class="p">:</span><span class="w"></span>
-<span class="w">                            </span><span class="nt">Hdf5ADImagesDataset</span><span class="p">:</span><span class="w"></span>
-<span class="w">                                </span><span class="nt">data_paths</span><span class="p">:</span><span class="w"></span>
-<span class="w">                                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/Denoising/i22-629822.nxs</span><span class="w"></span>
-<span class="w">                                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/Denoising/i22-629823.nxs</span><span class="w"></span>
-<span class="w">                                </span><span class="nt">frame_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/detector/data</span><span class="w"></span>
-<span class="w">                                </span><span class="nt">count_times_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/instrument/detector/count_time</span><span class="w"></span>
-<span class="w">                                </span><span class="nt">mask_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/processing/SAXS_mask.nxs</span><span class="w"></span>
-<span class="w">                                </span><span class="nt">mask_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry/mask/mask</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="nt">model</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">Noise2Self</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">network</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">Gaussian</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">kernel_half_width</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">                </span><span class="nt">train_dataset</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">Hdf5ADImagesDataset</span><span class="p">:</span>
+<span class="w">                        </span><span class="nt">data_paths</span><span class="p">:</span>
+<span class="w">                        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/Denoising/i22-629817.nxs</span>
+<span class="w">                        </span><span class="nt">frame_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/detector/data</span>
+<span class="w">                        </span><span class="nt">count_times_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/instrument/detector/count_time</span>
+<span class="w">                        </span><span class="nt">mask_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/processing/SAXS_mask.nxs</span>
+<span class="w">                        </span><span class="nt">mask_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry/mask/mask</span>
+<span class="w">                </span><span class="nt">val_dataset</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">InputTargetDataset</span><span class="p">:</span>
+<span class="w">                        </span><span class="nt">input</span><span class="p">:</span>
+<span class="w">                            </span><span class="nt">Hdf5ADImagesDataset</span><span class="p">:</span>
+<span class="w">                                </span><span class="nt">data_paths</span><span class="p">:</span>
+<span class="w">                                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/Denoising/i22-629817.nxs</span>
+<span class="w">                                </span><span class="nt">frame_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/detector/data</span>
+<span class="w">                                </span><span class="nt">count_times_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/instrument/detector/count_time</span>
+<span class="w">                                </span><span class="nt">mask_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/processing/SAXS_mask.nxs</span>
+<span class="w">                                </span><span class="nt">mask_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry/mask/mask</span>
+<span class="w">                        </span><span class="nt">target</span><span class="p">:</span>
+<span class="w">                            </span><span class="nt">Hdf5ADImagesDataset</span><span class="p">:</span>
+<span class="w">                                </span><span class="nt">data_paths</span><span class="p">:</span>
+<span class="w">                                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/Denoising/i22-629822.nxs</span>
+<span class="w">                                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/Denoising/i22-629823.nxs</span>
+<span class="w">                                </span><span class="nt">frame_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/detector/data</span>
+<span class="w">                                </span><span class="nt">count_times_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry1/instrument/detector/count_time</span>
+<span class="w">                                </span><span class="nt">mask_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dls/i22/data/2022/cm31149-3/processing/SAXS_mask.nxs</span>
+<span class="w">                                </span><span class="nt">mask_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entry/mask/mask</span>
 </pre></div>
 </div>
 <section id="how-the-documentation-is-structured">
