@@ -3,8 +3,8 @@ ad_denoise
 
 |code_ci| |docs_ci| |coverage| |license|
 
-This package provides the tools nessacary to train a neural network to denoise
-syncrotron x-ray area detector images.
+This package provides the tools necessary to train a neural network to denoise
+synchrotron x-ray area detector images.
 
 ============== ==============================================
 Source code    https://github.com/garryod/ad_denoise
@@ -12,7 +12,7 @@ Documentation  https://garryod.github.io/ad_denoise
 Releases       https://github.com/garryod/ad_denoise/releases
 ============== ==============================================
 
-Model training can be performed using the below command:
+Model training can be performed using the command below:
 
 .. code:: bash
 
